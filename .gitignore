@@ -30,5 +30,8 @@ out
 .idea
 *.iml
 
+# ignore mac files
+.DS_Store
+
 # ignore log files
 *.log
