@@ -9,6 +9,149 @@ import static com.zx.util.CommonMethon.*;
 
 public class Algorithm {
 
+    public int[] sumOfDistancesInTree_834_OverTime(int N, int[][] edges) {
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        for(int i=0;i<N-1;i++){
+            int a = edges[i][0];
+            int b = edges[i][1];
+            if (!map.containsKey(a)){
+                map.put(a,new ArrayList<Integer>());
+            }
+            map.get(a).add(b);
+            if (!map.containsKey(b)){
+                map.put(b,new ArrayList<Integer>());
+            }
+            map.get(b).add(a);
+
+        }
+        //int upper = N;
+        int []res = new int[N];
+        boolean[] inserted = new boolean[N];
+        Queue<Integer> qu = new LinkedList<>();
+        for(int i=0;i<N;i++){
+            int level = 0, count = 0;
+            Arrays.fill(inserted,false);
+            qu.offer(i);
+            inserted[i] = true;
+            int size = qu.size();
+            while(size!=0){
+                level++;
+                int curNum = 0;
+                while(size-- > 0){
+                    int n = qu.poll();
+                    for(int k: map.get(n)){
+                        if(!inserted[k]){
+                            qu.offer(k);
+                            curNum++;
+                            inserted[k] = true;
+                        }
+                    }
+                }
+                count += curNum*level;
+                size = qu.size();
+            }
+            res[i] = count;
+        }
+        return res;
+    }
+
+    public int[] sumOfDistancesInTree_834(int N, int[][] edges) {
+        int[] dp = new int[N];
+        int[] des = new int[N];
+        int[] res = new int[N];
+        //edge数组转化为图结构
+        List<List<Integer>> lists = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            lists.add(new ArrayList<Integer>());
+        }
+        for (int[] edge : edges) {
+            int a = edge[0], b = edge[1];
+            lists.get(a).add(b);
+            lists.get(b).add(a);
+        }
+
+        //构建第一个根节点
+
+
+        //foreach
+
+        return res;
+    }
+    private void helper_843(){
+        ;
+    }
+
+    public int numberOfMatches(int n) {
+        return n - 1;
+    }
+
+    public int minPartitions(String n) {
+        int res = 0;
+        for (char c : n.toCharArray()) {
+            res = Math.max(res,c-48);
+        }
+        return res;
+    }
+
+    public String reformatNumber(String number) {
+        char[] cs = new char[number.length()];
+        int len = 0;
+        for (char c : number.toCharArray()) {
+            if (c != '-' && c != ' '){
+                cs[len++] = c;
+            }
+        }
+        int subLen = len;
+        if (len % 3 == 1){
+            subLen = len - 4;
+        }
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        for (int i =0;i<subLen;i++){
+            if (count == 3){
+                sb.append("-");
+                count = 0;
+            }
+            count++;
+            sb.append(cs[i]);
+        }
+        if (subLen<len){
+            sb.append(cs[subLen++]);
+            sb.append(cs[subLen++]);
+            sb.append("-");
+            sb.append(cs[subLen++]);
+            sb.append(cs[subLen++]);
+        }
+        return sb.toString();
+    }
+
+    public int maximumUniqueSubarray(int[] nums) {
+        Map<Integer,Integer> map = new HashMap<>();
+        int max = 0;
+        int temp = 0;
+        int pre = 0;
+        for (int i = 0; i < nums.length; i++){
+            int n = nums[i];
+            if (map.containsKey(n)){
+                int preTemp = map.get(n);
+                if (preTemp<pre){
+                    temp += n;
+                }else {
+                    while (preTemp>=pre){
+                        temp -= nums[pre++];
+                    }
+                    temp += n;
+                }
+            }else {
+                temp += n;
+            }
+            map.put(n,i);
+            max = Math.max(temp,max);
+        }
+        return max;
+    }
+
+
     public void permulationAll(String s){
         if (s.length()!=0){
             Character[] charObjectArray =
@@ -762,5 +905,7 @@ public class Algorithm {
     public int firstUniqChar(String s) {
         return 1;
     }
+
+
 
 }
