@@ -6,22 +6,21 @@ import java.util.function.Consumer;
 public class Operation<S_IN,S_OUT> extends MyPipeLine<S_IN,S_OUT> {
 
     Operation(){
-        operation = this;
     }
 
     Operation(MyPipeLine<?,?> up){
         super(up);
-        operation = this;
+        up.next = this;
     }
 
     protected void begin(int size){
-        next.operation.begin(size);
+        next.begin(size);
     }
     protected void accept(S_IN s_in){
         System.out.println("accept in base class");
     }
     protected void end(){
-        next.operation.end();
+        next.end();
     }
 
     static <S_IN,S_OUT> Operation<S_OUT,S_OUT> makeDistinct(MyPipeLine<S_IN,S_OUT> up){
@@ -31,13 +30,13 @@ public class Operation<S_IN,S_OUT> extends MyPipeLine<S_IN,S_OUT> {
             @Override
             protected void begin(int size) {
                 seen = new HashSet<>(size);
-                next.operation.begin(size);
+                next.begin(size);
             }
 
             @Override
             protected void accept(S_OUT s_out) {
                 if (seen.add(s_out)){
-                    next.operation.accept(s_out);
+                    next.accept(s_out);
                 }
             }
         };
@@ -61,11 +60,11 @@ public class Operation<S_IN,S_OUT> extends MyPipeLine<S_IN,S_OUT> {
             @Override
             protected void end() {
                 list.sort(comparator);
-                next.operation.begin(list.size());
+                next.begin(list.size());
                 for (S_OUT s_out : list) {
-                    next.operation.accept(s_out);
+                    next.accept(s_out);
                 }
-                next.operation.end();
+                next.end();
             }
         };
     }

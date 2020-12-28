@@ -13,21 +13,16 @@ public class MyPipeLine<S_IN,S_OUT> implements MyStream<S_OUT>{
     int index;
 
     Supplier<S_OUT> supplier;
-    MyPipeLine previous;
 
     MyPipeLine head;
 
-    MyPipeLine next;
+    Operation next;
 
-    Operation operation;
-    
 
     MyPipeLine(){}
 
     MyPipeLine(MyPipeLine<?,?> up){
         this.head = up.head;
-        this.previous = up;
-        up.next = this;
     }
 
     MyPipeLine(List<S_OUT> newList){
@@ -46,7 +41,7 @@ public class MyPipeLine<S_IN,S_OUT> implements MyStream<S_OUT>{
             @Override
             protected void accept(S_OUT s_out) {
                 if (predicate.test(s_out)){
-                    next.operation.accept(s_out);
+                    next.accept(s_out);
                 }
             }
         };
@@ -62,7 +57,7 @@ public class MyPipeLine<S_IN,S_OUT> implements MyStream<S_OUT>{
         return new Operation<S_OUT,R>(this){
             @Override
             protected void accept(S_OUT sot) {
-                this.next.operation.accept(function.apply(sot));
+                this.next.accept(function.apply(sot));
             }
         };
     }
@@ -81,11 +76,11 @@ public class MyPipeLine<S_IN,S_OUT> implements MyStream<S_OUT>{
 
 
     protected void execute(MyPipeLine p){
-        p.next.operation.begin(p.size);
+        p.next.begin(p.size);
         for (p.index=0;p.index<p.size;p.index++){
-            p.next.operation.accept(p.supplier.get());
+            p.next.accept(p.supplier.get());
         }
-        p.next.operation.end();
+        p.next.end();
     }
 
 }

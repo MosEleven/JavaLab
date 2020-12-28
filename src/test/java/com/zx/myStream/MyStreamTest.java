@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MyStreamTest {
 
     @Test
-    public void test1(){
+    void test1(){
 
         Fruit fruit1 = new Fruit("apple","Red apple",new BigDecimal("7"));
         Fruit fruit2 = new Fruit("banana","Malaysia banana",new BigDecimal("10"));

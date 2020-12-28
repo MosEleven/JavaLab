@@ -902,10 +902,67 @@ public class Algorithm {
         return lists;
     }
 
+    //有快20倍的
     public int firstUniqChar(String s) {
-        return 1;
+        LinkedHashMap<Character,Integer> map = new LinkedHashMap<>(26);
+        Set<Character> set = new HashSet<>(26);
+        int index = 0;
+        for (char c : s.toCharArray()) {
+            if (!set.contains(c)){
+                map.put(c,index);
+                set.add(c);
+            }else {
+                map.remove(c);
+            }
+            index++;
+        }
+        Iterator<Integer> iterator = map.values().iterator();
+        return iterator.hasNext()? iterator.next():-1;
     }
 
+    //这个是把数组列出来了，只求值的话看下面的方法
+    public int candy(int[] ratings) {
+        int length = ratings.length;
+        if (length<=1)return length;
+        PriorityQueue<int[]> queue = new PriorityQueue<>((a,b)->a[0]-b[0]);
+        for (int i = 0; i < length; i++) {
+            int[] temp = new int[]{ratings[i],i};
+            queue.add(temp);
+        }
+        int[] res = new int[length];
+        while (!queue.isEmpty()){
+            int index = queue.poll()[1];
+            int rating = ratings[index];
+            int left = ((index-1>=0)&&ratings[index-1]<rating)? res[index-1] : 0;
+            int right= ((index+1<length)&&ratings[index+1]<rating)? res[index+1] : 0;
+            res[index] = Math.max(left,right) + 1;
+        }
+        return Arrays.stream(res).reduce(0, Integer::sum);
+    }
 
+    public int candyFast(int[] ratings){
+        int len = ratings.length;
+        if (len<=1) return len;
+        int count = 1,downNum = 2,upNum = 2;
+        int pre = ratings[0];
+        for (int i = 1; i < len; i++) {
+            int n = ratings[i];
+            if (n>pre) {
+                count += upNum++;
+                downNum = 1;
+            }
+            if (n==pre){
+                count += 1;
+                upNum = 2;
+                downNum = 2;
+            }
+            if (n<pre){
+                count += downNum++;
+                upNum = 2;
+            }
+            pre = n;
+        }
+        return count;
+    }
 
 }

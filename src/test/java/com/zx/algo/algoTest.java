@@ -129,4 +129,10 @@ public class algoTest {
         }));
         System.out.println(JSON.toJSONString(collect));
     }
+
+    @Test
+    void candy(){
+        int res = algorithm.candyFast(new int[]{1,6,10,8,7,3,2});
+        System.out.println(res);
+    }
 }
