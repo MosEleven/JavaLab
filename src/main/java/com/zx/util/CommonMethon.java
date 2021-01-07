@@ -1,5 +1,9 @@
 package com.zx.util;
 
+
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class CommonMethon {
     public static <T> void  swap (T[] array, int a, int b){
         T ob = array[a];
@@ -7,4 +11,5 @@ public class CommonMethon {
         array[b] = ob;
         //System.out.println(a+"和"+b);
     }
+
 }

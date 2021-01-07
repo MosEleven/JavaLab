@@ -4,14 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.zx.testClass.Fruit;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class algoTest {
     private static Algorithm algorithm = new Algorithm();
@@ -135,4 +133,24 @@ public class algoTest {
         int res = algorithm.candyFast(new int[]{1,6,10,8,7,3,2});
         System.out.println(res);
     }
+
+    @Test
+    void lastStoneWeight(){
+        int res = algorithm.lastStoneWeight(new int[]{2, 3, 4, 5});
+        System.out.println(res);
+    }
+
+    @Test
+    void eraseOverlapIntervals(){
+        int res = algorithm.eraseOverlapIntervals(new int[][]{{1, 2}, {1, 2}, {1, 2}});
+        System.out.println(res);
+    }
+
+    @Test
+    void computeIfAbsentTest(){
+        Map<String, Integer> stringLength = new HashMap<>();
+        assertEquals(4,stringLength.computeIfAbsent("John", String::length));
+        assertEquals(4,stringLength.get("John"));
+    }
+
 }

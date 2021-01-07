@@ -1,8 +1,11 @@
 package com.zx.algo;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.zx.util.AlgoUtil;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 import static com.zx.util.CommonMethon.*;
@@ -134,14 +137,12 @@ public class Algorithm {
             int n = nums[i];
             if (map.containsKey(n)){
                 int preTemp = map.get(n);
-                if (preTemp<pre){
-                    temp += n;
-                }else {
-                    while (preTemp>=pre){
+                if (preTemp >= pre) {
+                    while (preTemp >= pre) {
                         temp -= nums[pre++];
                     }
-                    temp += n;
                 }
+                temp += n;
             }else {
                 temp += n;
             }
@@ -920,7 +921,7 @@ public class Algorithm {
         return iterator.hasNext()? iterator.next():-1;
     }
 
-    //这个是把数组列出来了，只求值的话看下面的方法
+    //慢逼方法
     public int candy(int[] ratings) {
         int length = ratings.length;
         if (length<=1)return length;
@@ -941,28 +942,115 @@ public class Algorithm {
     }
 
     public int candyFast(int[] ratings){
-        int len = ratings.length;
-        if (len<=1) return len;
-        int count = 1,downNum = 2,upNum = 2;
-        int pre = ratings[0];
-        for (int i = 1; i < len; i++) {
-            int n = ratings[i];
-            if (n>pre) {
-                count += upNum++;
-                downNum = 1;
+        int[]candy=new int[ratings.length];
+        int num=ratings.length;
+        for(int i =1;i<ratings.length;i++){
+            if(ratings[i]>ratings[i-1]){
+                candy[i]=candy[i-1]+1;
             }
-            if (n==pre){
-                count += 1;
-                upNum = 2;
-                downNum = 2;
+        }
+        for(int j=ratings.length-1;j>0;j--){
+            if(ratings[j-1]>ratings[j]){
+                if(candy[j-1]<=candy[j]){
+                    candy[j-1]=candy[j]+1;
+                }
             }
-            if (n<pre){
-                count += downNum++;
-                upNum = 2;
-            }
-            pre = n;
+        }
+        for(int n=0;n<ratings.length;n++){
+            num+=candy[n];
+        }
+        return num;
+    }
+
+    //todo
+    public int minPatches(int[] nums, int n) {
+        int len = nums.length;
+        int count = 0, max = 0, p = 0, base = 1;
+        while(max<n){
+
         }
         return count;
     }
 
+    //todo
+    public int lastStoneWeight(int[] stones) {
+        int reduce = Arrays.stream(stones).sorted().reduce(0, (a, b) -> Math.abs(a - b));
+        return reduce;
+    }
+
+    public boolean canPlaceFlowers(int[] flowerbed, int n) {
+        int zeroCount = 1;
+        int max = 0;
+        for (int f : flowerbed) {
+            if (f == 0 ){
+                zeroCount++;
+            }
+            if (f == 1){
+                zeroCount = 0;
+            }
+            if (zeroCount == 3){
+                max++;
+                zeroCount = 1;
+            }
+        }
+        if (zeroCount == 2) max++;
+        return n <= max;
+    }
+
+    public int eraseOverlapIntervals(int[][] intervals) {
+        int len = intervals.length;
+        if (len<=1) return 0;
+        int count = 0;
+        Arrays.sort(intervals,(a,b)->(a[0]-b[0])!=0? (a[0]-b[0]):(a[1]-b[1]));
+        int[] pre = intervals[0];
+        for (int i = 1; i < len; i++) {
+            int[] temp = intervals[i];
+            if (pre[0]==temp[0] || pre[1]>temp[0]){
+                count++;
+                if (pre[1]>temp[1]){
+                    pre = temp;
+                }
+            }else {
+                pre = temp;
+            }
+        }
+        return count;
+    }
+
+    //fixme
+    public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
+        Map<String,Map<String,Double>> map = new HashMap<>();
+        for (int i = 0; i < values.length; i++) {
+            List<String> equation = equations.get(i);
+            updateCalcResult(map,equation.get(0),equation.get(1),values[i]);
+            updateCalcResult(map,equation.get(1),equation.get(0),1/values[i]);
+        }
+        double[] res = new double[queries.size()];
+        for (int i = 0; i < queries.size(); i++) {
+            List<String> query = queries.get(i);
+            Map<String, Double> resultMap = map.get(query.get(0));
+            if (resultMap == null){
+                res[i] = -1.0d;
+            }else {
+                if (query.get(0).equals(query.get(1))){
+                    res[i] = 1.d;
+                    continue;
+                }
+                res[i] = resultMap.getOrDefault(query.get(1),-1.0d);
+            }
+        }
+        return res;
+    }
+    private void updateCalcResult(Map<String,Map<String,Double>> map, String numerator, String denominator, double value){
+        Map<String, Double> resultMap = map.computeIfAbsent(numerator, e->new HashMap<>());
+        for (Map.Entry<String, Double> entry : resultMap.entrySet()) {
+            String oldDe = entry.getKey();
+            double oldValue = entry.getValue();
+            Map<String, Double> tempMap = map.computeIfAbsent(denominator, e -> new HashMap<>());
+            tempMap.put(oldDe,oldValue/value);
+            tempMap = map.computeIfAbsent(oldDe,e->new HashMap<>());
+            tempMap.put(denominator,value/oldValue);
+        }
+        resultMap.put(denominator,value);
+    }
 }
