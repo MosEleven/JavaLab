@@ -1053,4 +1053,24 @@ public class Algorithm {
         }
         resultMap.put(denominator,value);
     }
+
+    public int findCircleNum(int[][] isConnected) {
+        int count = 0;
+        boolean[] reach = new boolean[isConnected.length];
+        for (int i = 0; i < isConnected.length; i++) {
+            if (!reach[i]){
+                count++;
+                findCircleHelper(isConnected, reach, i);
+            }
+        }
+        return count;
+    }
+    private void findCircleHelper(int[][] isConnected, boolean[] reach, int n){
+        reach[n] = true;
+        for(int i=0; i< isConnected.length;i++){
+            if (isConnected[n][i]==1 && !reach[i]){
+                findCircleHelper(isConnected,reach,i);
+            }
+        }
+    }
 }
