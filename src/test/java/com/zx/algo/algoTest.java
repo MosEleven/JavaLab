@@ -153,4 +153,10 @@ public class algoTest {
         assertEquals(4,stringLength.get("John"));
     }
 
+    @Test
+    void emptyListTest(){
+        List<Integer> list = new ArrayList<>();
+        Integer n = list.get(0);
+        System.out.println(n);
+    }
 }

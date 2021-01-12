@@ -1073,4 +1073,63 @@ public class Algorithm {
             }
         }
     }
+
+    public void rotate(int[] nums, int k) {
+        int len = nums.length;
+        if(len<=1) return;
+        k = k % len;
+        int count = 0, start = -1, p = -1;
+        int nextNum = nums[0];
+        int tempNum;
+        while (count < len){
+            if (p == start) {
+                start = ++p;
+                tempNum = nums[start];
+            }else tempNum = nextNum;
+            p = (p + k) % len;
+            nextNum = nums[p];
+            nums[p] = tempNum;
+            count++;
+        }
+    }
+
+    //慢
+    public String smallestStringWithSwaps(String s, List<List<Integer>> pairs) {
+        //分成不同的联通集
+        //每个联通集下标按数字顺序放入list，字母放入Priority Queue
+        //依次从queue里面取出字母，按list里面的下标放到res数组里
+        int len = s.length();
+        boolean[] reached = new boolean[len];
+        char[] res = new char[len];
+        Map<Integer,List<Integer>> map = new HashMap<>();
+        PriorityQueue<Character> que = new PriorityQueue<>();
+        for (List<Integer> pair : pairs) {
+            List<Integer> list = map.computeIfAbsent(pair.get(0), a -> new ArrayList<Integer>());
+            list.add(pair.get(1));
+            list = map.computeIfAbsent(pair.get(1), a -> new ArrayList<Integer>());
+            list.add(pair.get(0));
+        }
+        for (int i = 0; i < len; i++) {
+            List<Integer> lits = new ArrayList<>();
+            if (!reached[i]){
+                smallestHelper(map,reached,i,lits,s,que);
+            }
+            lits.sort((a,b)->a-b);
+            for (Integer n : lits) {
+                res[n] = que.poll();
+            }
+        }
+        return new String(res);
+    }
+    private void smallestHelper(Map<Integer,List<Integer>> map, boolean[] reached, int n, List<Integer> list, String s, PriorityQueue<Character> que){
+        reached[n] = true;
+        list.add(n);
+        que.add(s.charAt(n));
+        if (!map.containsKey(n)) return;
+        for (Integer next : map.get(n)) {
+            if (!reached[next]){
+                smallestHelper(map,reached,next,list,s,que);
+            }
+        }
+    }
 }
