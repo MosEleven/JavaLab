@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.zx.testClass.Fruit;
+import com.zx.util.ValidatorUtil;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -158,5 +159,13 @@ public class algoTest {
         List<Integer> list = new ArrayList<>();
         Integer n = list.get(0);
         System.out.println(n);
+    }
+
+
+    @Test
+    void bigDecimalValidatorTest(){
+        BigDecimal d2 = new BigDecimal("12");
+        BigDecimal d1 = new BigDecimal("1");
+        System.out.println(ValidatorUtil.equals(d1,d2));
     }
 }
