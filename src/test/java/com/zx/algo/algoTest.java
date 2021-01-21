@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.zx.testClass.Fruit;
+import com.zx.util.AlgoUtil;
 import com.zx.util.ValidatorUtil;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -161,11 +162,27 @@ public class algoTest {
         System.out.println(n);
     }
 
-
     @Test
     void bigDecimalValidatorTest(){
         BigDecimal d2 = new BigDecimal("12");
         BigDecimal d1 = new BigDecimal("1");
         System.out.println(ValidatorUtil.equals(d1,d2));
+    }
+
+    @Test
+    void findRedundantConnection(){
+        int[][] param = AlgoUtil.parseStringToIntArray("[[1,2], [2,3], [3,4], [1,4], [1,5]]");
+        int[] res = algorithm.findRedundantConnection(param);
+        System.out.println(Arrays.toString(res));
+    }
+
+    @Test
+    void accountsMerge(){
+        String param = "[[\"David\",\"David0@m.co\",\"David1@m.co\"],[\"David\",\"David3@m.co\",\"David4@m.co\"],[\"David\",\"David4@m.co\",\"David5@m.co\"],[\"David\",\"David2@m.co\",\"David3@m.co\"],[\"David\",\"David1@m.co\",\"David2@m.co\"]]";
+//        String param = "[[\"John\",\"johnsmith@mail.com\",\"john_newyork@mail.com\"],[\"John\",\"johnsmith@mail.com\",\"john00@mail.com\"],[\"Mary\",\"mary@mail.com\"],[\"John\",\"johnnybravo@mail.com\"]]";
+        List<List<String>> list = AlgoUtil.paramToListListString(param);
+        System.out.println(list);
+        List<List<String>> res = algorithm.accountsMerge(list);
+        System.out.println(res);
     }
 }
