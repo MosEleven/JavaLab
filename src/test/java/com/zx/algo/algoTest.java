@@ -3,10 +3,17 @@ package com.zx.algo;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.sun.xml.internal.ws.util.StringUtils;
 import com.zx.testClass.Fruit;
 import com.zx.util.AlgoUtil;
+import com.zx.util.UnionFind;
 import com.zx.util.ValidatorUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
@@ -171,7 +178,7 @@ public class algoTest {
 
     @Test
     void findRedundantConnection(){
-        int[][] param = AlgoUtil.parseStringToIntArray("[[1,2], [2,3], [3,4], [1,4], [1,5]]");
+        int[][] param = AlgoUtil.paramTo2DIntArray("[[1,2], [2,3], [3,4], [1,4], [1,5]]");
         int[] res = algorithm.findRedundantConnection(param);
         System.out.println(Arrays.toString(res));
     }
@@ -185,4 +192,83 @@ public class algoTest {
         List<List<String>> res = algorithm.accountsMerge(list);
         System.out.println(res);
     }
+
+    @Test
+    void subStringTest(){
+        String s = "a\\b";
+        System.out.println(s.charAt(2));
+    }
+
+    @Test
+    void regionsBySlashes(){
+        String param = "[\"\\\\\\\\\\\\\",\"  \\\\\",\"  /\"]";
+        String[] strings = AlgoUtil.paramToArrayString(param);
+        int res = algorithm.regionsBySlashes(strings);
+        System.out.println(res);
+    }
+
+    @Test
+    void makeConnected(){
+        String param = "[[0,1],[0,2],[1,2]]";
+        int[][] ints = AlgoUtil.paramTo2DIntArray(param);
+        int res = algorithm.makeConnected(4, ints);
+        System.out.println(res);
+    }
+
+    @Test
+    void collectionRemoveTest(){
+        Map<String,String> map = new HashMap<>();
+        map.put("123","qwe");
+        map.put("456","asd");
+        map.put("789","zxc");
+        Set<Map.Entry<String, String>> entries = map.entrySet();
+        entries.removeIf(entry-> entry.getKey().equals("456"));
+        System.out.println(map);
+    }
+    @Test
+    void numEquivDominoPairs(){
+        String param = "[[1,2],[2,1],[2,1],[2,1],[3,4],[5,6]]";
+        int[][] ints = AlgoUtil.paramTo2DIntArray(param);
+        int res = algorithm.numEquivDominoPairs(ints);
+        System.out.println(res);
+
+    }
+    
+    @Test
+    void maxNumEdgesToRemove(){
+        String param = "[[3,1,2],[3,1,2],[3,2,3],[1,1,3],[1,2,4],[1,1,2],[2,3,4]]";
+        int[][] ints = AlgoUtil.paramTo2DIntArray(param);
+        int res = algorithm.maxNumEdgesToRemove(4, ints);
+        System.out.println(res);
+    }
+
+    @Test
+    void pivoxIndex(){
+        String param = "[1, 7, 3, 6, 5, 6]";
+        int[] ints = AlgoUtil.paramToIntArray(param);
+        int res = algorithm.pivotIndex(ints);
+        System.out.println(res);
+    }
+
+    public static boolean equals(BigDecimal d1, BigDecimal d2) {
+        return d1 == null? (d2==null) : (d2 != null && (d1.compareTo(d2) == 0));
+    }
+
+    @Test
+    void bigdecimalEqualsTest(){
+        BigDecimal d1 = new BigDecimal("1.2");
+        BigDecimal d2 = new BigDecimal("1.20");
+        Assertions.assertTrue(equals(null,d2));
+
+    }
+
+    @ParameterizedTest
+    @CsvSource("'[1,2,3,4]',24")
+    void maxinumProduct(String param, int result){
+        int[] ints = AlgoUtil.paramToIntArray(param);
+        int res = algorithm.maximumProduct(ints);
+        Assertions.assertEquals(result,res);
+    }
+
+
 }

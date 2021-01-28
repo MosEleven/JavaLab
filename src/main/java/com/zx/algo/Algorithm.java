@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.zx.util.AlgoUtil;
 import com.zx.util.UnionFind;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -1180,8 +1181,14 @@ public class Algorithm {
     //todo
     public int removeStones(int[][] stones) {
         int len = stones.length;
-        int[] row = new int[len];
-        int[] column = new int[len];
+        int[] parent = new int[2*len];
+        UnionFind unionFind = new UnionFind(2*len);
+        for (int[] stone : stones) {
+            int x = unionFind.findRoot(stone[0]);
+            int y = unionFind.findRoot(stone[1]+len);
+
+        }
+
         return 0;
     }
 
@@ -1233,5 +1240,145 @@ public class Algorithm {
         }
         return merged;
     }
+
+    public int regionsBySlashes(String[] grid) {
+        int len = grid.length;
+        UnionFind unionFind = new UnionFind(4*len*len);
+        for (int i = 0; i < len; i++) {
+            String row = grid[i];
+            for (int j = 0; j < row.length(); j++) {
+                int n = 4 * ( i*len + j);
+                //聚合内部小块
+                switch (row.charAt(j)){
+                    case '/':
+                        unionFind.mergeRoot(n,n+1);
+                        unionFind.mergeRoot(n+2,n+3);
+                        break;
+                    case ' ':
+                        unionFind.mergeRoot(n,n+1);
+                        unionFind.mergeRoot(n,n+2);
+                        unionFind.mergeRoot(n,n+3);
+                        break;
+                    default:
+                        unionFind.mergeRoot(n,n+3);
+                        unionFind.mergeRoot(n+1,n+2);
+                }
+                //聚合左和上的块
+                if (j>0) unionFind.mergeRoot(n-2,n);
+                if (i>0) unionFind.mergeRoot(n-4*len+3,n+1);
+            }
+        }
+        return unionFind.size();
+    }
+
+    public int makeConnected(int n, int[][] connections) {
+        int len = connections.length;
+        if (len<n-1) return -1;
+        UnionFind unionFind = new UnionFind(n);
+        for (int[] connection : connections) {
+            unionFind.mergeRoot(connection[0],connection[1]);
+        }
+        return unionFind.size()-1;
+    }
+
+    public List<List<Integer>> findCriticalAndPseudoCriticalEdges(int n, int[][] edges) {
+        int[] nums = new int[n];
+        PriorityQueue<int[]> queue = new PriorityQueue<>((a,b)->b[2]-a[2]);
+        for (int[] edge : edges) {
+            nums[edge[0]]++;
+            nums[edge[1]]++;
+            queue.add(edge);
+        }
+        return new ArrayList<>();
+    }
+    private void findCAPCEHelper(PriorityQueue<int[]> queue, int[][] edges, int[] nums, int i){
+        int[] peek = queue.peek();
+        while (nums[peek[0]]<2 || nums[peek[1]]<2) {
+            queue.poll();
+            peek = queue.peek();
+        }
+        int[] poll = queue.poll();
+
+    }
+
+    public int numEquivDominoPairs(int[][] dominoes) {
+        int[][] map = new int[10][10];
+        for (int[] dominoe : dominoes) {
+            map[dominoe[0]][dominoe[1]]++;
+            if (dominoe[0]!=dominoe[1])
+            map[dominoe[1]][dominoe[0]]++;
+        }
+        int count = 0;
+        for (int i = 1; i < 10; i++) {
+            for (int j = i; j < 10; j++) {
+                int n = map[i][j];
+                if (n>1){
+                    count += n*(n-1)/2;
+                }
+            }
+        }
+        return count;
+    }
+
+    public int maxNumEdgesToRemove(int n, int[][] edges) {
+        UnionFind unionFind =new UnionFind(n+1);
+        UnionFind ua = new UnionFind(n+1);
+        UnionFind ub = new UnionFind(n+1);
+        int count3 = 0;
+        for (int[] edge : edges) {
+            if (edge[0]==3){
+                if (unionFind.mergeRoot(edge[1],edge[2])) count3++;
+                ua.mergeRoot(edge[1],edge[2]);
+                ub.mergeRoot(edge[1],edge[2]);
+            }else if (edge[0]==1) ua.mergeRoot(edge[1],edge[2]);
+            else ub.mergeRoot(edge[1],edge[2]);
+        }
+        if (ua.size()>2 || ub.size()>2) return -1;
+        return edges.length - 2*n + 2 + count3;
+    }
+
+    public int maximumProduct(int[] nums) {
+        int len = nums.length;
+        if (len==3) return nums[0]*nums[1]*nums[2];
+        int min1=Integer.MAX_VALUE, min2=Integer.MAX_VALUE;
+        int max1=Integer.MIN_VALUE,max2=Integer.MIN_VALUE,max3=Integer.MIN_VALUE;
+        for (int n : nums) {
+            if (n>max1){
+                max3 = max2;
+                max2 = max1;
+                max1 = n;
+            }else if (n>max2){
+                max3 = max2;
+                max2 = n;
+            }else if (n>max3){
+                max3 = n;
+            }
+            if (n<min1){
+                min2 = min1;
+                min1 = n;
+            }else if (n<min2){
+                min2 = n;
+            }
+        }
+        return Math.max(min1*min2*max1,max1*max2*max3);
+    }
+
+    public int pivotIndex(int[] nums) {
+        int len = nums.length;
+        if (len==0) return -1;
+        if (len==1) return 0;
+        int l2r = 0;
+        int[] r2l = new int[len];
+        for (int i = len-2; i >= 0; i--) {
+            r2l[i] = r2l[i+1] + nums[i+1];
+        }
+        if (r2l[0]==0) return 0;
+        for (int i = 1; i < len; i++) {
+            l2r += nums[i-1];
+            if (l2r == r2l[i]) return i;
+        }
+        return -1;
+    }
+
 
 }

@@ -21,7 +21,21 @@ public class AlgoUtil {
         return n;
     }
 
-    public int[][] parseStringToIntArray(String s){
+    public List<int[]> sortedDistinctHelper(int[][] nums){
+        int len = nums[0].length;
+        List<int[]> list = new ArrayList<>(nums.length);
+        list.add(nums[0]);
+        int[] pre = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int[] now = nums[i];
+            int p = 0;
+            while (p<len && now[p]==pre[p++]);
+            if (p<len) list.add(now);
+        }
+        return list;
+    }
+
+    public int[][] paramTo2DIntArray(String s){
         char[] chars = s.toCharArray();
         List<int[]> list = new ArrayList<>();
         List<Integer> l = null;
@@ -36,7 +50,15 @@ public class AlgoUtil {
         return list.toArray(new int[0][]);
     }
 
+    public int[] paramToIntArray(String s){
+        return JSON.parseObject(s,int[].class);
+    }
+
     public List<List<String>> paramToListListString(String s){
         return JSON.parseObject(s, ArrayList.class);
+    }
+
+    public String[] paramToArrayString(String s){
+        return JSON.parseObject(s,String[].class);
     }
 }
