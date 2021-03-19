@@ -1,5 +1,6 @@
 package com.zx.testClass;
 
+import com.zx.util.AsynUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,4 +16,5 @@ public class Fruit {
     private String name;
 
     private BigDecimal price;
+
 }

@@ -8,7 +8,9 @@ import com.zx.testClass.Fruit;
 import com.zx.util.AlgoUtil;
 import com.zx.util.UnionFind;
 import com.zx.util.ValidatorUtil;
+import javafx.concurrent.Worker;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -18,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class algoTest {
@@ -233,7 +237,7 @@ public class algoTest {
         System.out.println(res);
 
     }
-    
+
     @Test
     void maxNumEdgesToRemove(){
         String param = "[[3,1,2],[3,1,2],[3,2,3],[1,1,3],[1,2,4],[1,1,2],[2,3,4]]";
@@ -270,5 +274,64 @@ public class algoTest {
         Assertions.assertEquals(result,res);
     }
 
+    @ParameterizedTest
+    @CsvSource({"'[[0,0],[2,2],[3,10],[5,2],[7,0]]',20",
+    "'[[3,12],[-2,5],[-4,1]]',18"})
+    void minCostConnectPoints(String param,int result){
+        int[][] p = AlgoUtil.paramTo2DIntArray(param);
+        int res = algorithm.minCostConnectPoints(p);
+        assertEquals(result, res);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"3,-2","-3,-2","3,2","-3,-2"})
+    void modTest(int a, int b){
+        assertEquals(a%b,modMethod(a,b));
+    }
+    private int modMethod(int a, int b){
+        return a - b * (a / b);
+    }
+
+    @Test
+    void toMapTest(){
+        List<String> list = new ArrayList<>();
+        Map<String, String> collect = list.stream().collect(Collectors.toMap(s -> s, s -> s));
+        System.out.println(collect);
+    }
+
+    @Test
+    void foreachTest(){
+        Map<String,List<String>> map = new HashMap<>();
+        map.put("ss",Lists.newArrayList("11","22","33"));
+        List<String> list = map.get("rr");
+        for (String s : list) {
+            System.out.println(s);
+        }
+    }
+
+    @Test
+    void inboundNoWithSameSku(){
+        String param = "316N44210201860510,316N44210201860512,BCTN279_0_20210201000006,BCTN280_0_20210201000008,316N44210201860512,BCTN280_0_20210201000008,316N44210201860514,BCTN280_0_20210201000008,316N44210201860520,BCTN280_0_20210201000008,316N44210201860524,BCTN280_0_20210201000008,316N44210201860526,BCTN279_0_20210201000006,BCTN280_0_20210201000008,316N44210201860542,BCTN280_0_20210201000008,316N44210201860548,BCTN280_0_20210201000008,316N44210201860552,BCTN279_0_20210201000006,316N44210201860554,BCTN279_0_20210201000006,BCTN280_0_20210201000008,316N44210201860572,BCTN279_0_20210201000006,BCTN280_0_20210201000008,316N44210201863053,BCTN280_0_20210201000008,316N44210201863065,BCTN279_0_20210201000003,316N44210201863071,BCTN280_0_20210201000008,316N44210201863074,BCTN280_0_20210201000008,316N44210201863443,BCTN280_0_20210201000008,316N44210201863490,BCTN280_0_20210201000008,316N44210201863493,BCTN280_0_20210201000008,316N44210201863495,BCTN280_0_20210201000008,316N44210201863497,BCTN280_0_20210201000008,316N44210201863499,BCTN28";
+
+    }
+
+    @Test
+    void finalStringTest(){
+        String a = "hello2";
+        final String b = "hello";
+        String d = "hello";
+        String c = b + 2;
+        String e = d + 2;
+        System.out.println((a == c));
+        System.out.println((a == e));
+
+    }
+
+
+    @Test
+    void trimTest(){
+        int n = Integer.MAX_VALUE;
+        System.out.println((n+n)>>>1);
+    }
 
 }

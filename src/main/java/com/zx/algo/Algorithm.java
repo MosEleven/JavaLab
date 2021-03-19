@@ -1380,5 +1380,51 @@ public class Algorithm {
         return -1;
     }
 
+    public int minCostConnectPoints(int[][] points) {
+        //每个点都与其最近点连接，怎么寻找？
+        int len = points.length;
+        if (len <= 1) return 0;
+        int[] closest = new int[len];
+        int clo1 = Integer.MAX_VALUE;
+        for (int i = 1; i < len; i++) {
+            int distance = minCostConnectPointsHelper(points[0], points[i]);
+            clo1 = Math.min(distance,clo1);
+            closest[i] = distance;
+        }
+        closest[0] = clo1;
+        for (int i = 1; i < len-1; i++) {
+            int close = closest[i];
+            for (int j = i+1; j < len; j++) {
+                int distance = minCostConnectPointsHelper(points[i], points[j]);
+                closest[j] = Math.min(distance,closest[j]);
+                close = Math.min(distance,close);
+            }
+            closest[i] = close;
+        }
+        int res = closest[0];
+        int min = closest[0];
+        for (int i = 1; i < len; i++) {
+            res += closest[i];
+            min = Math.min(min,closest[i]);
+        }
+        return res - min;
+    }
+    private int minCostConnectPointsHelper(int[]a, int[]b){
+        return Math.abs(a[0]-b[0]) + Math.abs(a[1]-b[1]);
+    }
+
+    public int minimumEffortPath(int[][] heights) {
+        int rows = heights.length;
+        int columns = heights[0].length;
+        boolean[][] reached = new boolean[rows][columns];
+        int[][] dij = new int[rows][columns];
+        dij[0][0] = 0;
+        dij[0][1] = Math.abs(heights[0][0]-heights[0][1]);
+        dij[1][0] = Math.abs(heights[0][0]-heights[1][0]);
+        //用dijkstra算法试试
+        int x = 0; int y = 0;
+
+        return 0;
+    }
 
 }
