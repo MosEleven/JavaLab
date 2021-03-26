@@ -19,7 +19,7 @@ class AsynUtilTest {
                 .addTask(this::longTask)
                 .addTask(this::longTask)
                 .addTask(this::longTask)
-                .submit();
+                .succeedAll();
 
         AsynUtil.Work work = AsynUtil.newWork()
                 .addTask(this::longTask)
@@ -27,7 +27,7 @@ class AsynUtilTest {
 
                 work.addTask(this::longTask)
                 .addTask(this::longTask)
-                .submit();
+                .succeedAll();
     }
 
     @Test
@@ -41,7 +41,7 @@ class AsynUtilTest {
         };
         w1.addTask(this::longTask)
                 .addTask(this::longTask)
-                .submit();
+                .succeedAll();
     }
 
     private void longTask(){
@@ -92,6 +92,73 @@ class AsynUtilTest {
             //fruit.setName("C");
             //return new Fruit("a", "aa", BigDecimal.ZERO);
         }
+    }
+
+    @Test
+    @DisplayName("anySuccess")
+    void anySuccess() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        AsynUtil.newWork()
+                .addTask(()->successT(5000))
+                .addTask(()->successT(9000))
+                .addTask(()->successT(6000))
+                .succeedAny();
+
+        long end = System.currentTimeMillis();
+        System.out.println("end test : " + (end-start));
+        Thread.sleep(12000);
+
+    }
+    @Test
+    @DisplayName("anySuccessOneFail")
+    void anySuccessOneFail() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        AsynUtil.newWork()
+                .addTask(()->failureT(5000))
+                .addTask(()->successT(9000))
+                .addTask(()->successT(6000))
+                .succeedAny();
+
+        long end = System.currentTimeMillis();
+        System.out.println("end test : " + (end-start));
+        Thread.sleep(12000);
+
+    }
+    @Test
+    @DisplayName("anySuccessAllFail")
+    void anySuccessAllFail() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        AsynUtil.newWork()
+                .addTask(()->failureT(5000))
+                .addTask(()->failureT(9000))
+                .addTask(()->failureT(6000))
+                .succeedAny();
+
+        long end = System.currentTimeMillis();
+        System.out.println("end test : " + (end-start));
+        Thread.sleep(12000);
+
+    }
+
+    private void successT(int t){
+        try {
+            Thread.sleep(t);
+        } catch (InterruptedException e) {
+            System.out.println("successT" + t + " is interrupted");
+            return;
+        }
+        System.out.println("successT" + t + " succeed");
+    }
+
+    private void failureT(int t){
+        try {
+            Thread.sleep(t);
+        } catch (InterruptedException e) {
+            System.out.println("failureT" + t + " is interrupted");
+            return;
+        }
+        System.out.println("failureT" + t + " is failure");
+        throw new RuntimeException("failureT" + t + " is failure");
     }
 
 }
