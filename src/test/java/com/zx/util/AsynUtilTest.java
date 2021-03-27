@@ -1,11 +1,17 @@
 package com.zx.util;
 
+import com.google.common.util.concurrent.AbstractFuture;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.zx.testClass.Fruit;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 class AsynUtilTest {
 
@@ -159,6 +165,26 @@ class AsynUtilTest {
         }
         System.out.println("failureT" + t + " is failure");
         throw new RuntimeException("failureT" + t + " is failure");
+    }
+
+    @Test
+    @DisplayName("监听")
+    void whenAddListener() throws ExecutionException, InterruptedException {
+
+        ListenableFuture<?> a1 = new AbstractFuture<Object>(){};
+        ListenableFuture<?> abstractFuture = new AbstractFuture<Object>() {
+            @Override
+            public Object get() throws ExecutionException, InterruptedException {
+                a1.addListener(this::nothing, MoreExecutors.directExecutor());
+                nothing();
+                return super.get();
+            }
+
+            private void nothing(){
+                set(null);
+            }
+        };
+        abstractFuture.get();
     }
 
 }

@@ -80,11 +80,9 @@ public class AsynUtil {
             public List<Object> get() throws InterruptedException, ExecutionException {
                 for (ListenableFuture<?> future : futures) {
                     future.addListener(() -> {
-                        //do some count work
                         try {
                             future.get();
                         }catch (Exception e){
-                            //失败一次，全失败就结束
                             if (failureCount.decrementAndGet()==0){
                                 this.setException(new RuntimeException("all tasks is failed when at least one needs to succeed"));
                             }
@@ -97,11 +95,10 @@ public class AsynUtil {
             }
 
             private void onSuccess(){
-                //todo 成功立马结束其他操作
                 for (ListenableFuture<?> future : futures) {
                     future.cancel(true);
                 }
-                set(Lists.newArrayList());
+                this.set(Lists.newArrayList());
             }
 
         };
