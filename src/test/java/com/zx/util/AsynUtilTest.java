@@ -9,8 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 class AsynUtilTest {
@@ -20,14 +18,14 @@ class AsynUtilTest {
     @Test
     @DisplayName("staticWay")
     void test1(){
-        AsynUtil.newWork()
+        AsynUtil.newWorks()
                 .addTask(this::longTask)
                 .addTask(this::longTask)
                 .addTask(this::longTask)
                 .addTask(this::longTask)
                 .succeedAll();
 
-        AsynUtil.Work work = AsynUtil.newWork()
+        AsynUtil.Work work = AsynUtil.newWorks()
                 .addTask(this::longTask)
                 .addTask(this::longTask);
 
@@ -104,10 +102,10 @@ class AsynUtilTest {
     @DisplayName("anySuccess")
     void anySuccess() throws InterruptedException {
         long start = System.currentTimeMillis();
-        AsynUtil.newWork()
+        AsynUtil.newWorks()
                 .addTask(()->successT(5000))
-                .addTask(()->successT(9000))
-                .addTask(()->successT(6000))
+                .addTask(()->successT(5000))
+                .addTask(()->successT(5000))
                 .succeedAny();
 
         long end = System.currentTimeMillis();
@@ -119,7 +117,7 @@ class AsynUtilTest {
     @DisplayName("anySuccessOneFail")
     void anySuccessOneFail() throws InterruptedException {
         long start = System.currentTimeMillis();
-        AsynUtil.newWork()
+        AsynUtil.newWorks()
                 .addTask(()->failureT(5000))
                 .addTask(()->successT(9000))
                 .addTask(()->successT(6000))
@@ -134,7 +132,7 @@ class AsynUtilTest {
     @DisplayName("anySuccessAllFail")
     void anySuccessAllFail() throws InterruptedException {
         long start = System.currentTimeMillis();
-        AsynUtil.newWork()
+        AsynUtil.newWorks()
                 .addTask(()->failureT(5000))
                 .addTask(()->failureT(9000))
                 .addTask(()->failureT(6000))

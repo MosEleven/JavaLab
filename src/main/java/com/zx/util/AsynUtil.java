@@ -25,12 +25,16 @@ public class AsynUtil {
 
     private AsynUtil(){}
 
-    public static Work newWork(int workNum) {
+    public static Work newWorks(int workNum) {
         return new Work(workNum);
     }
 
-    public static Work newWork() {
+    public static Work newWorks() {
         return new Work();
+    }
+
+    public static void submit(Runnable r){
+
     }
 
     private static void submit(Work work) {
@@ -75,6 +79,7 @@ public class AsynUtil {
         return new AbstractFuture<List<Object>>() {
 
             final AtomicInteger failureCount = new AtomicInteger(futures.size());
+            final AtomicInteger successCount = new AtomicInteger(0);
 
             @Override
             public List<Object> get() throws InterruptedException, ExecutionException {
@@ -95,9 +100,13 @@ public class AsynUtil {
             }
 
             private void onSuccess(){
+                if (successCount.incrementAndGet()>1){
+                    return;
+                }
                 for (ListenableFuture<?> future : futures) {
                     future.cancel(true);
                 }
+                System.out.println(Thread.currentThread().getName()+":success!!!!");
                 this.set(Lists.newArrayList());
             }
 
