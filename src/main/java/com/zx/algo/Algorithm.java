@@ -1427,4 +1427,155 @@ public class Algorithm {
         return 0;
     }
 
+    //直方图水量[0,1,0,2,1,0,1,3,2,1,2,1]
+    public int trap(int[] height) {
+        int len = height.length;
+        if (len < 3) return 0;
+        int water = 0;
+        int maxH = height[0];
+        int[] temp = new int[len];
+
+        // l to r
+        temp[0] = 0;
+        for (int i = 1; i < len; i++) {
+            int h = height[i];
+            if (maxH > h){
+                temp[i] = maxH - h;
+            }else {
+                maxH = h;
+            }
+        }
+        // r to l
+        maxH = height[len-1];
+        temp[len-1] = 0;
+        for (int i = len-2; i >= 0; i--) {
+            int h = height[i];
+            if (maxH > h){
+                temp[i] = Math.min(temp[i], (maxH - h));
+            }else {
+                maxH = h;
+                temp[i] = 0;
+            }
+        }
+
+        for (int h : temp) {
+            if (h>0) water += h;
+        }
+
+        return water;
+    }
+
+    public int longestCommonSubsequence(String text1, String text2) {
+        int m = text1.length()+1;
+        int n = text2.length()+1;
+        if (m==1 || n==1){
+            return 0;
+        }
+        int[][] res = new int[m][n];
+        for (int i = 1; i < m; i++) {
+            char c1 = text1.charAt(i - 1);
+            for (int j = 1; j < n; j++) {
+                char c2 = text2.charAt(j - 1);
+                if (c1 == c2){
+                    res[i][j] = res[i-1][j-1] + 1;
+                }else {
+                    res[i][j] = Math.max(res[i-1][j],res[i][j-1]);
+                }
+            }
+        }
+        return res[m-1][n-1];
+    }
+
+    public boolean search(int[] nums, int target) {
+        int start = nums[0];
+        if (start ==target) return true;
+        boolean atLeft = isAtLeft(start,target);
+        int left = 1, right = nums.length-1;
+        while (left<right && nums[left]==start) left++;
+        while (left<right && nums[right]==start) right--;
+
+        while (left <= right){
+            int mid = (left+right)>>>1;
+            int midN = nums[mid];
+            if (midN ==target) return true;
+            if (atLeft == isAtLeft(start, midN)){
+                if ((midN >target)){
+                    right = mid - 1;
+                }else {
+                    left = mid + 1;
+                }
+            }else if (atLeft){
+                right = mid - 1;
+            }else {
+                left = mid + 1;
+            }
+
+        }
+        return false;
+    }
+
+    private boolean isAtLeft(int start, int n){
+        return start <= n;
+    }
+
+    public int findMin(int[] nums) {
+        int start = nums[0];
+        int left = 1, right = nums.length-1;
+        if (start < nums[right]) return start;
+        while (left<right && nums[left]==start) left++;
+        while (left<right && nums[right]==start) right--;
+        while (left<=right){
+            int mid = (left+right)>>>1;
+            if (nums[mid]<nums[mid-1]) return nums[mid];
+            if (isAtLeft(start,nums[mid])) left = mid + 1;
+            else right = mid - 1;
+        }
+        return nums[right];
+    }
+
+    //笨阶乘
+    public int clumsy(int N) {
+        int res = getNextClumsyPart(N);
+        N -= 3;
+        while (N > 0){
+            res += N--;
+            res -= getNextClumsyPart(N);
+            N -= 3;
+        }
+        return res;
+    }
+
+    private int getNextClumsyPart(int n){
+        if (n <= 0) return 0;
+        int res = n--;
+        if (n>0) res *= n--;
+        if (n>0) res /= n;
+        return res;
+    }
+
+    public int clumsyFast(int N){
+        if (N < 3) return N;
+        if (N == 3) return 6;
+        if (N == 4) return 7;
+        int n = N % 4;
+        if (n == 0) return N + 1;
+        if (n < 3) return N + 2;
+        return N - 1;
+    }
+
+    public int findMin2(int[] nums){
+        int start = nums[0];
+        if (nums.length == 1) return start;
+        int left = 1, right = nums.length - 1;
+        while (left < right && nums[left]==start) left++;
+        while (left < right && nums[right]==start) right--;
+        while (left <= right){
+            int mid = (left + right) >>> 1;
+            if (nums[mid]<nums[mid-1]) return nums[mid];
+            if (nums[mid] < start) right = mid - 1;
+            else left = mid + 1;
+        }
+        return start;
+    }
 }
+
