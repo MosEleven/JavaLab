@@ -351,4 +351,26 @@ public class algoTest {
             System.out.printf("No.%s : %s%n",i,algorithm.clumsy(i));
         }
     }
+
+    @Test
+    @DisplayName("最大拼接数")
+    void largestNumber(){
+        int[] nums = AlgoUtil.paramToIntArray("[25,257,2]");
+        String res = algorithm.largestNumber(nums);
+        System.out.println(res);
+    }
+
+    @Test
+    @DisplayName("nothibg")
+    void sfdsaf(){
+        String[] split = "param[0].bizNo|ffff".split( "");
+        System.out.println(Arrays.toString(split));
+    }
+
+    @Test
+    @DisplayName("shipWithinDays")
+    void shipWithinDays(){
+        int[] ints = AlgoUtil.paramToIntArray("[1,2,3,4,5,6,7,8,9,10]");
+        algorithm.shipWithinDays(ints,5);
+    }
 }

@@ -4,51 +4,60 @@ import java.util.*;
 
 class Solution {
 
+    Deque<Integer> minQ;
+    Deque<Integer> maxQ;
+    int wlen;
+    int target;
+    int[] nums;
 
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        //保存k+1长度内的最大最小值
+        //每次往右挪动一格判断是否满足条件
 
-    private class UnionFind {
+        if (k==0) return t==0;
+        this.wlen = k + 1;
+        this.target = t;
+        this.nums = nums;
+        this.minQ = new LinkedList<>();
+        this.maxQ = new LinkedList<>();
 
-        private int[] parent;
-        /**
-         * 以 i 为根结点的子树的高度（引入了路径压缩以后该定义并不准确）
-         */
-        private int[] rank;
-
-        public UnionFind(int n) {
-            this.parent = new int[n];
-            this.rank = new int[n];
-            for (int i = 0; i < n; i++) {
-                this.parent[i] = i;
-                this.rank[i] = 1;
+        int len = nums.length;
+        for (int i=0; i < len; i++) {
+            if (addQAndJudge(i)){
+                return true;
             }
         }
+        return false;
+    }
 
-        public void union(int x, int y) {
-            int rootX = find(x);
-            int rootY = find(y);
-            if (rootX == rootY) {
-                return;
-            }
-
-            if (rank[rootX] == rank[rootY]) {
-                parent[rootX] = rootY;
-                // 此时以 rootY 为根结点的树的高度仅加了 1
-                rank[rootY]++;
-            } else if (rank[rootX] < rank[rootY]) {
-                parent[rootX] = rootY;
-                // 此时以 rootY 为根结点的树的高度不变
-            } else {
-                // 同理，此时以 rootX 为根结点的树的高度不变
-                parent[rootY] = rootX;
-            }
+    private void addQ(int index) {
+        if (index >= wlen){
+            removeQ(index - wlen);
         }
-
-        public int find(int x) {
-            if (x != parent[x]) {
-                parent[x] = find(parent[x]);
-            }
-            return parent[x];
+        int n = nums[index];
+        if (index > 0){
+            while (!maxQ.isEmpty() && maxQ.getLast()<n) maxQ.removeLast();
+            maxQ.addLast(n);
+            while (!minQ.isEmpty() && minQ.getLast()>n) minQ.removeLast();
+            minQ.addLast(n);
+        }else {
+            maxQ.offer(n);
+            minQ.offer(n);
         }
     }
-}
 
+    private void removeQ(int index) {
+        int n = nums[index];
+        if (n==maxQ.getFirst()) {
+            maxQ.removeFirst();
+        }
+        if (n==minQ.getFirst()) {
+            minQ.removeFirst();
+        }
+    }
+
+    private boolean addQAndJudge(int index) {
+        addQ(index);
+        return (maxQ.getFirst() - minQ.getFirst()) <= target;
+    }
+}

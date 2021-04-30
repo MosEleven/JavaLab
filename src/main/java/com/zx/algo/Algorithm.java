@@ -1577,5 +1577,83 @@ public class Algorithm {
         }
         return start;
     }
+
+    public String largestNumber(int[] nums) {
+        List<Integer> collect = Arrays.stream(nums).boxed().sorted(this::compareIntPrefix).collect(Collectors.toList());
+        if (collect.get(0).equals(0)) return "0";
+        StringBuilder sb = new StringBuilder();
+        for (Integer integer : collect) {
+            sb.append(integer);
+        }
+        return sb.toString();
+    }
+    private int compareIntPrefix(int a ,int b){
+        String as = String.valueOf(a);
+        String bs = String.valueOf(b);
+        return (bs+as).compareTo(as+bs);
+    }
+
+    public int shipWithinDays(int[] weights, int D) {
+        int total = 0;
+        for(int n : weights){
+            total += n;
+        }
+        int left = total / D;
+        int right = total;
+        while(left < right){
+            int mid = (left + right) >>> 1;
+            if(load(weights,D,mid)){
+                right = mid;
+            }else{
+                left = mid + 1;
+            }
+        }
+        return right;
+    }
+
+    private boolean load(int[] weights, int D, int load){
+        int rest = load;
+        int d = 1;
+        for(int n : weights){
+            if(n>load) return false;
+            if(n>rest){
+                d++;
+                rest = load - n;
+            }else{
+                rest -= n;
+            }
+            if(d > D) return false;
+        }
+        return true;
+    }
+
+    public int rangeSumBST(TreeNode root, int low, int high) {
+        return midSearchRangeSum(root);
+    }
+
+    private int midSearchRangeSum(TreeNode node){
+        if (node==null) return 0;
+        int sum = 0;
+        boolean left = node.val>=low;
+        boolean right = node.val<=high;
+        if (left){
+            sum += midSearchRangeSum(node.left);
+            if (right){
+                sum += node.val;
+            }
+        }
+        if (right){
+            sum += midSearchRangeSum(node.right);
+        }
+        return sum;
+    }
+
+    public int combinationSum4(int[] nums, int target) {
+        int[] res = new int[target+1];
+        for (int i = 1; i <= target; i++) {
+
+        }
+    }
+
 }
 
