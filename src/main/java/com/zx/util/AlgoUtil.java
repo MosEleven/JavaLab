@@ -36,18 +36,7 @@ public class AlgoUtil {
     }
 
     public int[][] paramTo2DIntArray(String s){
-        char[] chars = s.toCharArray();
-        List<int[]> list = new ArrayList<>();
-        List<Integer> l = null;
-        for (char c : chars) {
-            if (c == '[' && l == null) l = new ArrayList<>();
-            if (Character.isDigit(c) && l != null) l.add(c - '0');
-            if (c == ']' && l != null && !l.isEmpty()){
-                list.add(l.stream().mapToInt(n->n).toArray());
-                l = new ArrayList<>();
-            }
-        }
-        return list.toArray(new int[0][]);
+        return JSON.parseObject(s,int[][].class);
     }
 
     public int[] paramToIntArray(String s){
