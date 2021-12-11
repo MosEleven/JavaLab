@@ -1627,33 +1627,7 @@ public class Algorithm {
         return true;
     }
 
-    public int rangeSumBST(TreeNode root, int low, int high) {
-        return midSearchRangeSum(root);
-    }
 
-    private int midSearchRangeSum(TreeNode node){
-        if (node==null) return 0;
-        int sum = 0;
-        boolean left = node.val>=low;
-        boolean right = node.val<=high;
-        if (left){
-            sum += midSearchRangeSum(node.left);
-            if (right){
-                sum += node.val;
-            }
-        }
-        if (right){
-            sum += midSearchRangeSum(node.right);
-        }
-        return sum;
-    }
-
-    public int combinationSum4(int[] nums, int target) {
-        int[] res = new int[target+1];
-        for (int i = 1; i <= target; i++) {
-
-        }
-    }
 
     public int FillArray (int[] a, int k) {
 
