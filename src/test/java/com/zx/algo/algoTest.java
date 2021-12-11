@@ -270,5 +270,39 @@ public class algoTest {
         Assertions.assertEquals(result,res);
     }
 
+    @Test
+    void FillArray(){
+        int[] ints = AlgoUtil.paramToIntArray("[0,0,3,0,0,0,0,5,6,0,0,7]");
+        System.out.println(algorithm.FillArray(ints,8));
+
+        System.out.println("0".compareTo("024"));
+    }
+
+    @Test
+    void superPow(){
+        algorithm.superPow(2,new int[]{1,1});
+
+
+
+    }
+
+    @Test
+    void localTest(){
+        int[] nums = AlgoUtil.paramToIntArray("[9,3,15,20,7]");
+
+        //System.out.println((double)count/times*100+"%");
+    }
+
+    public int divideSearch(int[] nums, int left, int right, int target) {
+        int mid = left;
+        while(left<=right){
+            mid = (left+right)>>1;
+            int n = nums[mid];
+            if(n==target) return mid;
+            if(n<target) left = mid+1;
+            else right = mid - 1;
+        }
+        return mid;
+    }
 
 }

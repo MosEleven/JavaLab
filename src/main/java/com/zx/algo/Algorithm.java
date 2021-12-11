@@ -1381,4 +1381,236 @@ public class Algorithm {
     }
 
 
+    public int FillArray (int[] a, int k) {
+
+        int p = 0;
+        int len = a.length;
+        int count = 1;
+        int head=-1,tail=-1;
+        //分段
+        //每段先找开头结尾
+        List<Integer> range = new ArrayList<>();
+        List<Integer> width = new ArrayList<>();
+        int mr = Integer.MIN_VALUE;
+        int mw = Integer.MIN_VALUE;
+        while(p<len){
+           int segLen = 1;
+            for(;p<len;p++){
+                if (a[p]==0){
+                    if (p==0){
+                        head = 1;
+                    }else {
+                        head = a[p-1];
+                    }
+                    break;
+                }
+            }
+            p++;
+            if(head==-1) break;
+            for (;p<len;p++){
+                if (a[p]!=0){
+                    tail = a[p];
+                    break;
+                }
+                segLen++;
+            }
+            if (tail == -1) tail = k;
+            range.add(tail-head+1);
+            width.add(segLen);
+            mr = Math.max(mr,tail-head+1);
+            mw = Math.max(mw,segLen);
+            //count *= FillArrayHelp(head,tail,segLen);
+            head = -1;
+            tail = -1;
+            p++;
+        }
+        if (range.isEmpty()) return count;
+        return count*FillArrayHelp(mr,mw,range,width);
+    }
+    public int FillArrayHelp(int mr, int mw, List<Integer> range,List<Integer> width){
+        int[][] matrix = new int[mw][mr];
+        for (int i = 0; i < mr; i++) {
+            matrix[0][i] = i + 1;
+        }
+        for (int i = 0; i < mw; i++) {
+            matrix[i][0] = 1;
+        }
+        long count = 1;
+        for (int i = 0; i < range.size(); i++) {
+            int r = range.get(i) - 1;
+            int w = width.get(i) - 1;
+            if (matrix[w][r]==0){
+                count = (count*FillArrayHelp2(r,w,matrix)) % 1000000007;
+            }else {
+                count = (count*matrix[w][r]) % 1000000007;
+            }
+        }
+        //System.out.println(Arrays.deepToString(matrix));
+        return (int) count;
+    }
+    public int FillArrayHelp2(int r, int w, int[][] matrix){
+        if (matrix[w][r] == 0) {
+            matrix[w][r] = FillArrayHelp2(r-1,w,matrix) + FillArrayHelp2(r,w-1,matrix);
+        }
+        return  matrix[w][r];
+    }
+
+
+    public int maxValue (String s, int k) {
+        // write code here
+        if (s.length()==k) return Integer.parseInt(s);
+
+        String maxV = "0";
+        char maxN = '0';
+        for (int i = 0; i<= s.length()-k;i++){
+            if (s.charAt(i)<maxN) continue;
+            maxN = s.charAt(i);
+            String temp = s.substring(i,i+k);
+            if (maxV.compareTo(temp)<0) {
+                maxV = temp;
+            }
+        }
+        return Integer.parseInt(maxV);
+    }
+    public int maxValue2 (String s, int k) {
+        // write code here
+        if (s.length()==k) return Integer.parseInt(s);
+
+        String maxV = s.substring(0,k);
+
+        for (int i = 1; i<= s.length()-k;i++){
+            int j = 0;
+            while (j<k && maxV.charAt(j)==s.charAt(i+j)){
+                j++;
+            }
+            if (j==k) j--;
+            if (maxV.charAt(j) < s.charAt(i+j)){
+                maxV = s.substring(i,i+k);
+            }
+
+        }
+        return Integer.parseInt(maxV);
+    }
+
+    public TreeNode pruneLeaves (TreeNode root) {
+        // write code here
+        if (pruneLeaves_needP(root)){
+            return null;
+        }
+        pruneLeaves_foreach(root);
+        return root;
+    }
+    public void pruneLeaves_foreach(TreeNode node){
+        if (node == null) return;
+        if (pruneLeaves_needP(node.left)){
+            node.left = null;
+        }
+        if (pruneLeaves_needP(node.right)){
+            node.right = null;
+        }
+        pruneLeaves_foreach(node.left);
+        pruneLeaves_foreach(node.right);
+    }
+
+    public boolean pruneLeaves_needP(TreeNode node){
+        if (node==null) return false;
+        boolean need = false;
+        if (node.left!=null){
+            need = pruneLeaves_needP_isLeaf(node.left);
+        }
+        if (!need && node.right!=null){
+            need = pruneLeaves_needP_isLeaf(node.right);
+        }
+        return need;
+    }
+    public boolean pruneLeaves_needP_isLeaf(TreeNode node){
+        return (node.left==null && node.right==null);
+    }
+
+    public String wow(String s) {
+
+        int len = s.length();
+        if (len <= 1) return s;
+        int max = 1,left = 0;
+        boolean start = false;
+        String ans = String.valueOf(s.charAt(0));
+        for(int i=1;i<len;i++){
+            if(left < 0){
+                if(max<i){
+                    max = i;
+                    ans = s.substring(0,i);
+                }
+                start = false;
+                left = i-1;
+            }
+            if (start){
+                if (s.charAt(left)==s.charAt(i)) {
+                    left--;
+                }else{
+                    start = false;
+                    if(max<i-left+1){
+                        max = i-left+1;
+                        ans = s.substring(left+1,i);
+                    }
+                    left = i-1;
+                    i--;
+                }
+            }else {
+                if (s.charAt(i)==s.charAt(left)){
+                    start = true;
+                    while (left>0 && s.charAt(left-1)==s.charAt(left)) left--;
+                    left--;
+                    while (i<len-1 && s.charAt(i)==s.charAt(i+1)) i++;
+                }else if(i>1 && s.charAt(i)==s.charAt(i-2)){
+                    start = true;
+                    left = i - 3;
+                }else {
+                    left = i;
+                }
+            }
+        }
+        if (max<len-left-1){
+            ans = s.substring(left+1,len);
+        }
+        return ans;
+    }
+
+
+    public int superPow(int a, int[] b) {
+        a = a % 1337;
+        return superPowHelper(a,b);
+    }
+    public int superPowHelper(int a, int[] b) {
+        int len = b.length;
+        if(len>1){
+            int[] half = halfHelper(b);
+            int res = superPowHelper(a,half);
+            res = (res*res)%1337;
+            if(b[len-1]/2==1) res = (res*a) % 1337;
+            return res;
+        }
+        int res = 1;
+        for(int i=0; i<b[0];i++){
+            res = (res*a) % 1337;
+        }
+        return res;
+    }
+    public int[] halfHelper(int[] b) {
+        int len = b.length;
+        int bs = 0;
+        boolean remain = false;
+        if(b[0]==1) {
+            len--;
+            bs = 1;
+            remain = true;
+        }
+        int[] half = new int[len];
+        for(int i=0; i<len; i++){
+            int n = b[i+bs] / 2;
+            if(remain) n += 5;
+            half[i] = n;
+            remain = b[i+bs]/2 == 1;
+        }
+        return half;
+    }
 }
